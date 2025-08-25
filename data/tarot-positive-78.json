@@ -1,0 +1,392 @@
+[
+  {
+    "name": "The Fool",
+    "meaning_up": "Fresh starts and open‑hearted trust. Say yes to the adventure.",
+    "meaning_rev": "Prepare a little more, then take the step you already know is right."
+  },
+  {
+    "name": "The Magician",
+    "meaning_up": "Your skills and voice matter—focus your will and make it real.",
+    "meaning_rev": "Simplify your tools so your power flows cleanly."
+  },
+  {
+    "name": "The High Priestess",
+    "meaning_up": "Your intuition is accurate. Listen for the soft ‘yes’.",
+    "meaning_rev": "Quiet the noise; your inner guidance gets clearer with rest."
+  },
+  {
+    "name": "The Empress",
+    "meaning_up": "Nurture and creativity bloom around you.",
+    "meaning_rev": "Refill before you pour—self‑care is productive."
+  },
+  {
+    "name": "The Emperor",
+    "meaning_up": "Structure supports you. Set a clear boundary.",
+    "meaning_rev": "Make the rule kinder and it will work better for you."
+  },
+  {
+    "name": "The Hierophant",
+    "meaning_up": "Lean on wisdom and share what uplifts others.",
+    "meaning_rev": "Keep what resonates; release the rest with love."
+  },
+  {
+    "name": "The Lovers",
+    "meaning_up": "Choose with your values; alignment invites ease.",
+    "meaning_rev": "Re‑align with yourself first—clarity follows."
+  },
+  {
+    "name": "The Chariot",
+    "meaning_up": "Momentum carries you forward. You’ve got this.",
+    "meaning_rev": "Tiny course‑corrections restore flow."
+  },
+  {
+    "name": "Strength",
+    "meaning_up": "Gentle courage turns obstacles into allies.",
+    "meaning_rev": "Softness with yourself is the strongest move today."
+  },
+  {
+    "name": "The Hermit",
+    "meaning_up": "A little solitude brings bright insight.",
+    "meaning_rev": "You’re not alone; share your light and let support in."
+  },
+  {
+    "name": "Wheel of Fortune",
+    "meaning_up": "The tide turns in your favor—say yes to the opening.",
+    "meaning_rev": "Breathe and trust timing; the click is coming."
+  },
+  {
+    "name": "Justice",
+    "meaning_up": "Fairness and clarity land—stand in your integrity.",
+    "meaning_rev": "Balance first; you can be kind and clear."
+  },
+  {
+    "name": "The Hanged Man",
+    "meaning_up": "A new angle unlocks an easy answer.",
+    "meaning_rev": "Loosen the timeline; insight arrives when you slow down."
+  },
+  {
+    "name": "Death",
+    "meaning_up": "Gentle ending; clean beginning. Make room for new growth.",
+    "meaning_rev": "Shed one thin layer at a time; you’re safe to change."
+  },
+  {
+    "name": "Temperance",
+    "meaning_up": "Harmony through blending—meet in the middle.",
+    "meaning_rev": "Lighten the mix; a little less here, a little more there."
+  },
+  {
+    "name": "The Devil",
+    "meaning_up": "Reclaim your power—one small choice breaks the pattern.",
+    "meaning_rev": "You’re already free; step out of the old story."
+  },
+  {
+    "name": "The Tower",
+    "meaning_up": "Breakthrough clears space quickly; what remains is real.",
+    "meaning_rev": "Stabilize upgrades—steady beats sudden overhauls."
+  },
+  {
+    "name": "The Star",
+    "meaning_up": "Hope is practical—your healing radiates outward.",
+    "meaning_rev": "Refill your well; the light returns as you rest."
+  },
+  {
+    "name": "The Moon",
+    "meaning_up": "Trust dreams and subtle signals.",
+    "meaning_rev": "Name the worry; once seen, it softens and passes."
+  },
+  {
+    "name": "The Sun",
+    "meaning_up": "Joy and clarity—celebrate the win, big or small.",
+    "meaning_rev": "Let a little sunlight in; it brightens everything else."
+  },
+  {
+    "name": "Judgement",
+    "meaning_up": "Awakening—answer your own call with confidence.",
+    "meaning_rev": "You can choose again; no perfection required."
+  },
+  {
+    "name": "The World",
+    "meaning_up": "Completion and wholeness. Well done.",
+    "meaning_rev": "Close the loop with gratitude; the next chapter opens easily."
+  },
+  {
+    "name": "Ace of Wands",
+    "meaning_up": "Fresh spark in energy, creativity, purpose. Say yes to the new start.",
+    "meaning_rev": "Pause to ground the new spark in energy, creativity, purpose."
+  },
+  {
+    "name": "Two of Wands",
+    "meaning_up": "Balanced choices in energy, creativity, purpose. Plan and proceed.",
+    "meaning_rev": "Simplify options in energy, creativity, purpose; clarity first."
+  },
+  {
+    "name": "Three of Wands",
+    "meaning_up": "Teamwork and growth in energy, creativity, purpose. Collaborate and build.",
+    "meaning_rev": "Ask for support in energy, creativity, purpose; collaboration wants balance."
+  },
+  {
+    "name": "Four of Wands",
+    "meaning_up": "Stability and gratitude in energy, creativity, purpose. Celebrate small wins.",
+    "meaning_rev": "Make space for rest in energy, creativity, purpose."
+  },
+  {
+    "name": "Five of Wands",
+    "meaning_up": "Learning through contrast in energy, creativity, purpose. Reframe and adapt.",
+    "meaning_rev": "Soften competition; learn and move on in energy, creativity, purpose."
+  },
+  {
+    "name": "Six of Wands",
+    "meaning_up": "Momentum and support in energy, creativity, purpose. Share and receive.",
+    "meaning_rev": "Receive help in energy, creativity, purpose; you don’t have to do it alone."
+  },
+  {
+    "name": "Seven of Wands",
+    "meaning_up": "Stand your ground in energy, creativity, purpose. Your stance is valid.",
+    "meaning_rev": "Choose your battles in energy, creativity, purpose; protect your peace."
+  },
+  {
+    "name": "Eight of Wands",
+    "meaning_up": "Progress accelerates in energy, creativity, purpose. Focus and flow.",
+    "meaning_rev": "Reduce busywork; keep only what moves energy, creativity, purpose forward."
+  },
+  {
+    "name": "Nine of Wands",
+    "meaning_up": "Resilience pays off in energy, creativity, purpose. Protect your gains.",
+    "meaning_rev": "Lighten the guard; safe to exhale in energy, creativity, purpose."
+  },
+  {
+    "name": "Ten of Wands",
+    "meaning_up": "Completion in energy, creativity, purpose. Set down what’s heavy.",
+    "meaning_rev": "Release overload; delegate in energy, creativity, purpose."
+  },
+  {
+    "name": "Page of Wands",
+    "meaning_up": "Curiosity awakens in energy, creativity, purpose. Try the beginner’s step.",
+    "meaning_rev": "Be kind to the learner in you in energy, creativity, purpose."
+  },
+  {
+    "name": "Knight of Wands",
+    "meaning_up": "Purposeful action in energy, creativity, purpose. Channel your drive wisely.",
+    "meaning_rev": "Aim your effort; steadiness beats speed in energy, creativity, purpose."
+  },
+  {
+    "name": "Queen of Wands",
+    "meaning_up": "Warm mastery in energy, creativity, purpose. Nurture what matters.",
+    "meaning_rev": "Refill your cup; boundaries keep energy, creativity, purpose thriving."
+  },
+  {
+    "name": "King of Wands",
+    "meaning_up": "Confident leadership in energy, creativity, purpose. Decide and guide.",
+    "meaning_rev": "Lead with empathy; invite input in energy, creativity, purpose."
+  },
+  {
+    "name": "Ace of Cups",
+    "meaning_up": "Fresh spark in feelings, relationships, intuition. Say yes to the new start.",
+    "meaning_rev": "Pause to ground the new spark in feelings, relationships, intuition."
+  },
+  {
+    "name": "Two of Cups",
+    "meaning_up": "Balanced choices in feelings, relationships, intuition. Plan and proceed.",
+    "meaning_rev": "Simplify options in feelings, relationships, intuition; clarity first."
+  },
+  {
+    "name": "Three of Cups",
+    "meaning_up": "Teamwork and growth in feelings, relationships, intuition. Collaborate and build.",
+    "meaning_rev": "Ask for support in feelings, relationships, intuition; collaboration wants balance."
+  },
+  {
+    "name": "Four of Cups",
+    "meaning_up": "Stability and gratitude in feelings, relationships, intuition. Celebrate small wins.",
+    "meaning_rev": "Make space for rest in feelings, relationships, intuition."
+  },
+  {
+    "name": "Five of Cups",
+    "meaning_up": "Learning through contrast in feelings, relationships, intuition. Reframe and adapt.",
+    "meaning_rev": "Soften competition; learn and move on in feelings, relationships, intuition."
+  },
+  {
+    "name": "Six of Cups",
+    "meaning_up": "Momentum and support in feelings, relationships, intuition. Share and receive.",
+    "meaning_rev": "Receive help in feelings, relationships, intuition; you don’t have to do it alone."
+  },
+  {
+    "name": "Seven of Cups",
+    "meaning_up": "Stand your ground in feelings, relationships, intuition. Your stance is valid.",
+    "meaning_rev": "Choose your battles in feelings, relationships, intuition; protect your peace."
+  },
+  {
+    "name": "Eight of Cups",
+    "meaning_up": "Progress accelerates in feelings, relationships, intuition. Focus and flow.",
+    "meaning_rev": "Reduce busywork; keep only what moves feelings, relationships, intuition forward."
+  },
+  {
+    "name": "Nine of Cups",
+    "meaning_up": "Resilience pays off in feelings, relationships, intuition. Protect your gains.",
+    "meaning_rev": "Lighten the guard; safe to exhale in feelings, relationships, intuition."
+  },
+  {
+    "name": "Ten of Cups",
+    "meaning_up": "Completion in feelings, relationships, intuition. Set down what’s heavy.",
+    "meaning_rev": "Release overload; delegate in feelings, relationships, intuition."
+  },
+  {
+    "name": "Page of Cups",
+    "meaning_up": "Curiosity awakens in feelings, relationships, intuition. Try the beginner’s step.",
+    "meaning_rev": "Be kind to the learner in you in feelings, relationships, intuition."
+  },
+  {
+    "name": "Knight of Cups",
+    "meaning_up": "Purposeful action in feelings, relationships, intuition. Channel your drive wisely.",
+    "meaning_rev": "Aim your effort; steadiness beats speed in feelings, relationships, intuition."
+  },
+  {
+    "name": "Queen of Cups",
+    "meaning_up": "Warm mastery in feelings, relationships, intuition. Nurture what matters.",
+    "meaning_rev": "Refill your cup; boundaries keep feelings, relationships, intuition thriving."
+  },
+  {
+    "name": "King of Cups",
+    "meaning_up": "Confident leadership in feelings, relationships, intuition. Decide and guide.",
+    "meaning_rev": "Lead with empathy; invite input in feelings, relationships, intuition."
+  },
+  {
+    "name": "Ace of Swords",
+    "meaning_up": "Fresh spark in thoughts, clarity, communication. Say yes to the new start.",
+    "meaning_rev": "Pause to ground the new spark in thoughts, clarity, communication."
+  },
+  {
+    "name": "Two of Swords",
+    "meaning_up": "Balanced choices in thoughts, clarity, communication. Plan and proceed.",
+    "meaning_rev": "Simplify options in thoughts, clarity, communication; clarity first."
+  },
+  {
+    "name": "Three of Swords",
+    "meaning_up": "Teamwork and growth in thoughts, clarity, communication. Collaborate and build.",
+    "meaning_rev": "Ask for support in thoughts, clarity, communication; collaboration wants balance."
+  },
+  {
+    "name": "Four of Swords",
+    "meaning_up": "Stability and gratitude in thoughts, clarity, communication. Celebrate small wins.",
+    "meaning_rev": "Make space for rest in thoughts, clarity, communication."
+  },
+  {
+    "name": "Five of Swords",
+    "meaning_up": "Learning through contrast in thoughts, clarity, communication. Reframe and adapt.",
+    "meaning_rev": "Soften competition; learn and move on in thoughts, clarity, communication."
+  },
+  {
+    "name": "Six of Swords",
+    "meaning_up": "Momentum and support in thoughts, clarity, communication. Share and receive.",
+    "meaning_rev": "Receive help in thoughts, clarity, communication; you don’t have to do it alone."
+  },
+  {
+    "name": "Seven of Swords",
+    "meaning_up": "Stand your ground in thoughts, clarity, communication. Your stance is valid.",
+    "meaning_rev": "Choose your battles in thoughts, clarity, communication; protect your peace."
+  },
+  {
+    "name": "Eight of Swords",
+    "meaning_up": "Progress accelerates in thoughts, clarity, communication. Focus and flow.",
+    "meaning_rev": "Reduce busywork; keep only what moves thoughts, clarity, communication forward."
+  },
+  {
+    "name": "Nine of Swords",
+    "meaning_up": "Resilience pays off in thoughts, clarity, communication. Protect your gains.",
+    "meaning_rev": "Lighten the guard; safe to exhale in thoughts, clarity, communication."
+  },
+  {
+    "name": "Ten of Swords",
+    "meaning_up": "Completion in thoughts, clarity, communication. Set down what’s heavy.",
+    "meaning_rev": "Release overload; delegate in thoughts, clarity, communication."
+  },
+  {
+    "name": "Page of Swords",
+    "meaning_up": "Curiosity awakens in thoughts, clarity, communication. Try the beginner’s step.",
+    "meaning_rev": "Be kind to the learner in you in thoughts, clarity, communication."
+  },
+  {
+    "name": "Knight of Swords",
+    "meaning_up": "Purposeful action in thoughts, clarity, communication. Channel your drive wisely.",
+    "meaning_rev": "Aim your effort; steadiness beats speed in thoughts, clarity, communication."
+  },
+  {
+    "name": "Queen of Swords",
+    "meaning_up": "Warm mastery in thoughts, clarity, communication. Nurture what matters.",
+    "meaning_rev": "Refill your cup; boundaries keep thoughts, clarity, communication thriving."
+  },
+  {
+    "name": "King of Swords",
+    "meaning_up": "Confident leadership in thoughts, clarity, communication. Decide and guide.",
+    "meaning_rev": "Lead with empathy; invite input in thoughts, clarity, communication."
+  },
+  {
+    "name": "Ace of Pentacles",
+    "meaning_up": "Fresh spark in resources, work, body. Say yes to the new start.",
+    "meaning_rev": "Pause to ground the new spark in resources, work, body."
+  },
+  {
+    "name": "Two of Pentacles",
+    "meaning_up": "Balanced choices in resources, work, body. Plan and proceed.",
+    "meaning_rev": "Simplify options in resources, work, body; clarity first."
+  },
+  {
+    "name": "Three of Pentacles",
+    "meaning_up": "Teamwork and growth in resources, work, body. Collaborate and build.",
+    "meaning_rev": "Ask for support in resources, work, body; collaboration wants balance."
+  },
+  {
+    "name": "Four of Pentacles",
+    "meaning_up": "Stability and gratitude in resources, work, body. Celebrate small wins.",
+    "meaning_rev": "Make space for rest in resources, work, body."
+  },
+  {
+    "name": "Five of Pentacles",
+    "meaning_up": "Learning through contrast in resources, work, body. Reframe and adapt.",
+    "meaning_rev": "Soften competition; learn and move on in resources, work, body."
+  },
+  {
+    "name": "Six of Pentacles",
+    "meaning_up": "Momentum and support in resources, work, body. Share and receive.",
+    "meaning_rev": "Receive help in resources, work, body; you don’t have to do it alone."
+  },
+  {
+    "name": "Seven of Pentacles",
+    "meaning_up": "Stand your ground in resources, work, body. Your stance is valid.",
+    "meaning_rev": "Choose your battles in resources, work, body; protect your peace."
+  },
+  {
+    "name": "Eight of Pentacles",
+    "meaning_up": "Progress accelerates in resources, work, body. Focus and flow.",
+    "meaning_rev": "Reduce busywork; keep only what moves resources, work, body forward."
+  },
+  {
+    "name": "Nine of Pentacles",
+    "meaning_up": "Resilience pays off in resources, work, body. Protect your gains.",
+    "meaning_rev": "Lighten the guard; safe to exhale in resources, work, body."
+  },
+  {
+    "name": "Ten of Pentacles",
+    "meaning_up": "Completion in resources, work, body. Set down what’s heavy.",
+    "meaning_rev": "Release overload; delegate in resources, work, body."
+  },
+  {
+    "name": "Page of Pentacles",
+    "meaning_up": "Curiosity awakens in resources, work, body. Try the beginner’s step.",
+    "meaning_rev": "Be kind to the learner in you in resources, work, body."
+  },
+  {
+    "name": "Knight of Pentacles",
+    "meaning_up": "Purposeful action in resources, work, body. Channel your drive wisely.",
+    "meaning_rev": "Aim your effort; steadiness beats speed in resources, work, body."
+  },
+  {
+    "name": "Queen of Pentacles",
+    "meaning_up": "Warm mastery in resources, work, body. Nurture what matters.",
+    "meaning_rev": "Refill your cup; boundaries keep resources, work, body thriving."
+  },
+  {
+    "name": "King of Pentacles",
+    "meaning_up": "Confident leadership in resources, work, body. Decide and guide.",
+    "meaning_rev": "Lead with empathy; invite input in resources, work, body."
+  }
+]

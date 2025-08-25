@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Reframe – Reframe It</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="index.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Daily Reframe</h1>
+    <p>A new lens. A new story. A new you.</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="daily.html" aria-current="page">Daily Insight</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Top image from your repo (displayed ONCE) -->
+    <section class="hero" style="text-align:center;">
+      <img
+        src="images/DrawTarotCard.jpg"
+        alt="Draw a Tarot Card"
+        style="max-width: 720px; width: 100%; height: auto; border-radius: 12px;"
+      />
+    </section>
+
+    <section>
+      <h2>Card of the Day</h2>
+      <p>Tap the button to draw a card and get a quick reframing insight.</p>
+
+      <button id="drawBtn">Draw Card</button>
+
+      <div id="result" style="margin-top: 1rem;">
+        <!-- index.js will place the card result here -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Reframe It</p>
+  </footer>
+</body>
+</html>

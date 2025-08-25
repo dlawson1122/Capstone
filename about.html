@@ -3,36 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About - Reframe It</title>
+  <title>About – Reframe It</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="index.js"></script>
 </head>
 <body>
-  <header>
-    <h1>About Reframe It</h1>
-    <p>Guided by spirit, grounded in science - made to rewire your mind.</p>
+  <header class="site-header">
+    <div class="brand">
+      <h1>About</h1>
+      <p class="tag">Our story & purpose</p>
+    </div>
+
+    <nav id="topNav" class="nav">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-menu">
+        <i class="fa-solid fa-bars"></i><span class="sr-only">Menu</span>
+      </button>
+      <ul id="primary-menu" class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" aria-current="page">About</a></li>
+        <li><a href="daily.html">Daily Insight</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="daily.html">Daily Insight</a></li>
-    </ul>
-  </nav>
-
   <main>
-    <section>
-      <h2>Why We Exist</h2>
-      <p><strong>Reframe It</strong> was born from a simple truth: our beliefs shape our reality. Using tools like Tarot, Astrology, NLP, and Cognitive Behavioral Therapy, we offer modern ways to question the old stories running your life, and rewrite them with intention.</p>
+    <!-- Hero cosmic tree/brain -->
+    <section class="hero">
+      <img src="images/reframeIT.png" alt="Cosmic brain and tree illustration" />
     </section>
 
-    <section>
-      <h2>How It Works</h2>
-      <ul>
-        <li>Decode your story through Tarot, Astrology, and archetypal wisdom</li>
-        <li>Reveal and release the beliefs that keep you stuck</li>
-        <li>Reframe your mindset with rituals, reflection, and language that heals</li>
-      </ul>
+    <!-- Content cards -->
+    <section class="about-card">
+      <h2>Our Mission</h2>
+      <p>Reframe It was created to give people a practical, uplifting way to shift their perspective. By blending symbolic traditions like Tarot with modern psychology and daily affirmations, we aim to help you rewire limiting beliefs into empowering ones.</p>
+    </section>
+
+    <section class="about-card">
+      <h2>Why Reframing?</h2>
+      <p>Reframing allows us to tell a different story about the same facts. Instead of being stuck in old loops, you can find meaning, hope, and growth in every experience. Our tools make this practice easy and accessible every day.</p>
     </section>
   </main>
 
