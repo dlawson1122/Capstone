@@ -3,32 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Reframe – Reframe It</title>
+  <title>Daily Insight – Reframe It</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="index.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Daily Reframe</h1>
-    <p>A new lens. A new story. A new you.</p>
+  <header class="site-header">
+    <div class="brand">
+      <h1>Daily Insight</h1>
+      <p class="tag">A new lens. A new story. A new you.</p>
+    </div>
+
+    <nav id="topNav" class="nav">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-menu">
+        <i class="fa-solid fa-bars"></i><span class="sr-only">Menu</span>
+      </button>
+      <ul id="primary-menu" class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="daily.html" aria-current="page">Daily Insight</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="daily.html">Daily Insight</a></li>
-    </ul>
-  </nav>
-
   <main>
-    <section>
-      <h2>Coming Soon</h2>
-      <p>Here you'll be able to receive a daily card pull, astrological insight, or affirmation to help reframe your thinking and shift your mindset.</p>
+    <section class="hero">
+      <img src="images/DrawTarotCard.jpg" alt="Draw a Tarot Card" />
     </section>
 
     <section>
-      <h2>Example Daily Insight</h2>
-      <p><em>Card of the Day: The Star</em> - A reminder that healing and hope are always within reach. Today, choose to believe in your power to evolve.</p>
+      <h2>Card of the Day</h2>
+      <p>Tap the button to draw a card and get a reframing insight.</p>
+      <button id="drawBtn">Draw Card</button>
+      <div id="result"></div>
+    </section>
+
+    <section>
+      <h2>Affirmation</h2>
+      <p>Tap for a quick, positive reframe.</p>
+      <button id="affBtn">Get Affirmation</button>
+      <div id="affResult"></div>
     </section>
   </main>
 
