@@ -64,11 +64,11 @@ async function handleDraw() {
 
 // ---------- API Affirmations ----------
 async function fetchAffirmation() {
-  const url = "https://www.affirmations.dev/";
+  const url = "https://www.affirmations.dev/?t=" + new Date().getTime(); // add timestamp
   const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
   if (!res.ok) throw new Error("Affirmations API error");
   const data = await res.json();
-  return JSON.parse(data.contents); // unwrap
+  return JSON.parse(data.contents);
 }
 
 function renderAffirmationCard(text) {
