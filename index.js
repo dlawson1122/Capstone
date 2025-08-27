@@ -1,10 +1,7 @@
-// Helper
+// ---------- Helper ----------
 const $ = (sel) => document.querySelector(sel);
 
-// Always upright for positivity
-const alwaysUpright = true;
-
-// TAROT DECK (local JSON)
+// ---------- TAROT DECK (local JSON) ----------
 let tarotDeck = [];
 
 async function loadTarotDeck() {
@@ -18,9 +15,6 @@ async function loadTarotDeck() {
 }
 
 function pickRandomCard() {
-  if (!tarotDeck.length) {
-    return { name: "The Star", meaning_up: "Hope, renewal, optimism.", meaning_rev: "Gentle recalibration restores hope." };
-  }
   return tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
 }
 
@@ -50,7 +44,7 @@ async function handleDraw() {
 
   try {
     const raw = pickRandomCard();
-    const reversed = alwaysUpright ? false : Math.random() < 0.5;
+    const reversed = Math.random() < 0.5; // 50/50 upright vs reversed
     renderResult({
       name: raw.name,
       uprightText: raw.meaning_up,
@@ -58,28 +52,32 @@ async function handleDraw() {
       reversed
     });
   } catch (e) {
-    console.error(e);
-    $("#result").innerHTML = `<p>Couldn’t draw a card. Check <code>data/tarot-positive-78.json</code>.</p>`;
+    $("#result").innerHTML = `
+      <p>Couldn’t draw a card. Check <code>data/tarot-positive-78.json</code>.</p>
+    `;
+    console.error("Card draw failed:", e);
   } finally {
     btn.disabled = false;
     btn.textContent = "Draw Card";
   }
 }
 
-// API Affirmations
+// ---------- API Affirmations ----------
 async function fetchAffirmation() {
-  const res = await fetch("https://www.affirmations.dev/");
+  const url = "https://www.affirmations.dev/";
+  const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
   if (!res.ok) throw new Error("Affirmations API error");
-  return res.json();
+  const data = await res.json();
+  return JSON.parse(data.contents); // unwrap
 }
 
 function renderAffirmationCard(text) {
   const target = $("#affResult");
   if (!target) return;
   target.innerHTML = `
-    <div class="tarot-wrap">
-      <div class="tarot-card">
-        <div class="tarot-ribbon">Affirmation</div>
+    <div class="affirm-wrap">
+      <div class="affirm-card">
+        <div class="affirm-ribbon">Affirmation</div>
         <h3 class="card-title">Daily Reframe</h3>
         <div class="card-divider"></div>
         <p class="card-meaning">${text}</p>
@@ -100,7 +98,7 @@ async function handleAffirmation() {
     const data = await fetchAffirmation();
     renderAffirmationCard(data.affirmation || "You are doing better than you think.");
   } catch (e) {
-    console.error(e);
+    console.error("Affirmations API failed:", e);
     renderAffirmationCard("A gentle reminder: you’re resilient and resourceful.");
   } finally {
     btn.disabled = false;
@@ -108,18 +106,7 @@ async function handleAffirmation() {
   }
 }
 
-// Hamburger Nav
-function setupNavToggle() {
-  const nav = document.getElementById("topNav");
-  const btn = document.querySelector(".nav-toggle");
-  if (!nav || !btn) return;
-  btn.addEventListener("click", () => {
-    const open = nav.classList.toggle("open");
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-}
-
-// Init
+// ---------- Init ----------
 document.addEventListener("DOMContentLoaded", async () => {
   await loadTarotDeck();
 
@@ -128,6 +115,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const affBtn = $("#affBtn");
   if (affBtn) affBtn.addEventListener("click", handleAffirmation);
-
-  setupNavToggle();
 });
