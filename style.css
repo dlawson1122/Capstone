@@ -223,4 +223,17 @@ footer {
   color: #425b56;
   line-height: 1.7;
 }
+#oops404 {
+  text-align: center;
+  padding: 2rem;
+  color: #004D40;
+}
+#oops404 img {
+  max-width: 420px;
+  width: 92%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  margin: 1rem auto;
+  display: block;
+}
 

@@ -1,7 +1,13 @@
-// ---------- Helper ----------
-const $ = (sel) => document.querySelector(sel);
+// ---------- IMPORTS ----------
+import { header, nav, main, footer } from "./components";
+import * as store from "./store";
+import Navigo from "navigo";
+import { camelCase } from "lodash";
 
-// ---------- TAROT DECK (local JSON) ----------
+// ---------- HELPERS ----------
+const $ = sel => document.querySelector(sel);
+
+// ---------- TAROT (local JSON) ----------
 let tarotDeck = [];
 
 async function loadTarotDeck() {
@@ -22,18 +28,21 @@ function renderResult({ name, uprightText, reversedText, reversed }) {
   const orientation = reversed ? "Reversed" : "Upright";
   const meaning = reversed ? reversedText : uprightText;
 
-  $("#result").innerHTML = `
-    <div class="tarot-wrap">
-      <div class="tarot-card">
-        <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientation}</div>
-        <h3 class="card-title">${name}</h3>
-        <div class="card-divider"></div>
-        <p class="card-meaning">${meaning}</p>
-        <span class="corner-bl">✶</span>
-        <span class="corner-br">✶</span>
+  const el = $("#result");
+  if (el) {
+    el.innerHTML = `
+      <div class="tarot-wrap">
+        <div class="tarot-card">
+          <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientation}</div>
+          <h3 class="card-title">${name}</h3>
+          <div class="card-divider"></div>
+          <p class="card-meaning">${meaning}</p>
+          <span class="corner-bl">✶</span>
+          <span class="corner-br">✶</span>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  }
 }
 
 async function handleDraw() {
@@ -44,7 +53,7 @@ async function handleDraw() {
 
   try {
     const raw = pickRandomCard();
-    const reversed = Math.random() < 0.5; // 50/50 upright vs reversed
+    const reversed = Math.random() < 0.5;
     renderResult({
       name: raw.name,
       uprightText: raw.meaning_up,
@@ -52,9 +61,12 @@ async function handleDraw() {
       reversed
     });
   } catch (e) {
-    $("#result").innerHTML = `
-      <p>Couldn’t draw a card. Check <code>data/tarot-positive-78.json</code>.</p>
-    `;
+    const el = $("#result");
+    if (el) {
+      el.innerHTML = `
+        <p>Couldn’t draw a card. Check <code>data/tarot-positive-78.json</code>.</p>
+      `;
+    }
     console.error("Card draw failed:", e);
   } finally {
     btn.disabled = false;
@@ -62,10 +74,12 @@ async function handleDraw() {
   }
 }
 
-// ---------- API Affirmations ----------
+// ---------- AFFIRMATIONS (API) ----------
 async function fetchAffirmation() {
-  const url = "https://www.affirmations.dev/?t=" + new Date().getTime(); // add timestamp
-  const res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
+  const url = "https://www.affirmations.dev/?t=" + new Date().getTime();
+  const res = await fetch(
+    "https://api.allorigins.win/get?url=" + encodeURIComponent(url)
+  );
   if (!res.ok) throw new Error("Affirmations API error");
   const data = await res.json();
   return JSON.parse(data.contents);
@@ -96,23 +110,69 @@ async function handleAffirmation() {
 
   try {
     const data = await fetchAffirmation();
-    renderAffirmationCard(data.affirmation || "You are doing better than you think.");
+    renderAffirmationCard(
+      data.affirmation || "You are doing better than you think."
+    );
   } catch (e) {
     console.error("Affirmations API failed:", e);
-    renderAffirmationCard("A gentle reminder: you’re resilient and resourceful.");
+    renderAffirmationCard(
+      "A gentle reminder: you’re resilient and resourceful."
+    );
   } finally {
     btn.disabled = false;
     btn.textContent = "Get Affirmation";
   }
 }
 
-// ---------- Init ----------
+// ---------- SPA RENDER ----------
+const router = new Navigo("/");
+
+function render(state = store.home) {
+  document.querySelector("#root").innerHTML = `
+    ${header(state)}
+    ${nav(store.nav)}
+    ${main(state)}
+    ${footer()}
+  `;
+
+  // let Navigo manage <a data-navigo>
+  router.updatePageLinks();
+
+  // attach events ONLY when Daily view is rendered
+  if (state.view === "daily") {
+    const drawBtn = $("#drawBtn");
+    const affBtn = $("#affBtn");
+    if (drawBtn) drawBtn.addEventListener("click", handleDraw);
+    if (affBtn) affBtn.addEventListener("click", handleAffirmation);
+  }
+
+  // optional: mobile menu toggle
+  const toggle = document.querySelector(".nav-toggle");
+  const navEl = document.querySelector(".nav");
+  if (toggle && navEl) {
+    toggle.onclick = () => navEl.classList.toggle("open");
+  }
+}
+
+// 404 handler
+router.notFound(() => render(store.viewNotFound));
+
+// routes
+router.on({
+  "/": () => render(),
+  "/:view": match => {
+    const view = match?.data?.view ? camelCase(match.data.view) : "home";
+    if (view in store) {
+      render(store[view]);
+    } else {
+      render(store.viewNotFound);
+      console.log(`View ${view} not defined`);
+    }
+  }
+});
+
+// ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", async () => {
   await loadTarotDeck();
-
-  const drawBtn = $("#drawBtn");
-  if (drawBtn) drawBtn.addEventListener("click", handleDraw);
-
-  const affBtn = $("#affBtn");
-  if (affBtn) affBtn.addEventListener("click", handleAffirmation);
+  router.resolve();
 });
