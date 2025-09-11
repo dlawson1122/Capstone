@@ -9,6 +9,8 @@ import deck from "./src/data/tarot-positive-78.json"; // direct import with Parc
 // Env Vars (Parcel reads .env into process.env at build time)
 const AFFIRM_API = process.env.AFFIRMATION_API;
 const CORS_PROXY = process.env.CORS_PROXY;
+// One place for API base (use your backend URL in production via .env)
+const API = process.env.API_BASE || "http://localhost:3000";
 
 // Helpers
 const $ = sel => document.querySelector(sel);
@@ -148,64 +150,73 @@ function render(state = store.home) {
     if (drawBtn) drawBtn.addEventListener("click", handleDraw);
     if (affBtn) affBtn.addEventListener("click", handleAffirmation);
   }
+
   if (state.view === "journal") {
-  const form = document.getElementById("journalForm");
-  const entriesEl = document.getElementById("entries");
+    const form = document.getElementById("journalForm");
+    const entriesEl = document.getElementById("entries");
 
-  // load existing
-  fetch(`${process.env.API_BASE || "http://localhost:3000"}/api/journal`)
-    .then(r => r.json())
-    .then(items => {
-      entriesEl.innerHTML = items.map(e => `
-        <article class="entry" data-id="${e._id}">
-          <h3>${e.mood || "📝"} ${e.title || "(untitled)"}</h3>
-          <small>${new Date(e.createdAt).toLocaleString()}</small>
-          <p style="white-space:pre-wrap">${e.body || e.text || ""}</p>
-        </article>
-      `).join("") || "<p>No entries yet.</p>";
-    })
-    .catch(() => entriesEl.innerHTML = "<p>Couldn’t load entries.</p>");
-
-  // submit new
-  if (form) {
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-
-      const payload = {
-        title: form.title?.value?.trim() || "",
-        body: form.body?.value?.trim() || "",
-        mood: form.mood?.value || ""
-      };
-
-      try {
-        const res = await fetch(`${process.env.API_BASE || "http://localhost:3000"}/api/journal`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const created = await res.json();
-
-        // prepend
-        entriesEl.innerHTML = `
-          <article class="entry" data-id="${created._id}">
-            <h3>${created.mood || "📝"} ${created.title || "(untitled)"}</h3>
-            <small>${new Date(created.createdAt).toLocaleString()}</small>
-            <p style="white-space:pre-wrap">${created.body || created.text || ""}</p>
+    // load existing
+    fetch(`${API}/api/journal`)
+      .then(r => r.json())
+      .then(items => {
+        entriesEl.innerHTML = items.map(e => `
+          <article class="journal-card" data-id="${e._id}">
+            <div class="journal-ribbon">${e.mood || "Entry"}</div>
+            <h3 class="card-title">${e.title || "(untitled)"}</h3>
+            <div class="card-divider"></div>
+            <p class="card-meaning" style="white-space:pre-wrap">${e.body || e.text || ""}</p>
+            <span class="corner-bl">✶</span>
+            <span class="corner-br">✶</span>
+            <span class="entry-meta">${new Date(e.createdAt).toLocaleString()}</span>
           </article>
-        ` + entriesEl.innerHTML;
+        `).join("") || "<p style='text-align:center'>No entries yet.</p>";
+      })
+      .catch(() => entriesEl.innerHTML = "<p>Couldn’t load entries.</p>");
 
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        alert("Saving failed.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
+    // submit new
+    if (form) {
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+
+        const payload = {
+          title: form.title?.value?.trim() || "",
+          body: form.body?.value?.trim() || "",
+          mood: form.mood?.value || ""
+        };
+
+        try {
+          const res = await fetch(`${API}/api/journal`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const created = await res.json();
+
+          // prepend (same card structure)
+          entriesEl.innerHTML = `
+            <article class="journal-card" data-id="${created._id}">
+              <div class="journal-ribbon">${created.mood || "Entry"}</div>
+              <h3 class="card-title">${created.title || "(untitled)"}</h3>
+              <div class="card-divider"></div>
+              <p class="card-meaning" style="white-space:pre-wrap">${created.body || created.text || ""}</p>
+              <span class="corner-bl">✶</span>
+              <span class="corner-br">✶</span>
+              <span class="entry-meta">${new Date(created.createdAt).toLocaleString()}</span>
+            </article>
+          ` + entriesEl.innerHTML;
+
+          form.reset();
+        } catch (err) {
+          console.error(err);
+          alert("Saving failed.");
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
   }
-}
 
   const toggle = document.querySelector(".nav-toggle");
   const navEl = document.querySelector(".nav");
