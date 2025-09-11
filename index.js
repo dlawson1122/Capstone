@@ -148,6 +148,64 @@ function render(state = store.home) {
     if (drawBtn) drawBtn.addEventListener("click", handleDraw);
     if (affBtn) affBtn.addEventListener("click", handleAffirmation);
   }
+  if (state.view === "journal") {
+  const form = document.getElementById("journalForm");
+  const entriesEl = document.getElementById("entries");
+
+  // load existing
+  fetch(`${process.env.API_BASE || "http://localhost:3000"}/api/journal`)
+    .then(r => r.json())
+    .then(items => {
+      entriesEl.innerHTML = items.map(e => `
+        <article class="entry" data-id="${e._id}">
+          <h3>${e.mood || "📝"} ${e.title || "(untitled)"}</h3>
+          <small>${new Date(e.createdAt).toLocaleString()}</small>
+          <p style="white-space:pre-wrap">${e.body || e.text || ""}</p>
+        </article>
+      `).join("") || "<p>No entries yet.</p>";
+    })
+    .catch(() => entriesEl.innerHTML = "<p>Couldn’t load entries.</p>");
+
+  // submit new
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+
+      const payload = {
+        title: form.title?.value?.trim() || "",
+        body: form.body?.value?.trim() || "",
+        mood: form.mood?.value || ""
+      };
+
+      try {
+        const res = await fetch(`${process.env.API_BASE || "http://localhost:3000"}/api/journal`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const created = await res.json();
+
+        // prepend
+        entriesEl.innerHTML = `
+          <article class="entry" data-id="${created._id}">
+            <h3>${created.mood || "📝"} ${created.title || "(untitled)"}</h3>
+            <small>${new Date(created.createdAt).toLocaleString()}</small>
+            <p style="white-space:pre-wrap">${created.body || created.text || ""}</p>
+          </article>
+        ` + entriesEl.innerHTML;
+
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Saving failed.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+}
 
   const toggle = document.querySelector(".nav-toggle");
   const navEl = document.querySelector(".nav");
