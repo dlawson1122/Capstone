@@ -1,26 +1,23 @@
-// ---------- IMPORTS ----------
+// Imports
 import { header, nav, main, footer } from "./components";
 import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
+import axios from "axios";
+import deck from "./src/data/tarot-positive-78.json"; // direct import with Parcel
 
-// ---------- HELPERS ----------
+// Env Vars (Parcel reads .env into process.env at build time)
+const AFFIRM_API = process.env.AFFIRMATION_API;
+const CORS_PROXY = process.env.CORS_PROXY;
+
+// Helpers
 const $ = sel => document.querySelector(sel);
 
-// ---------- TAROT (local JSON) ----------
-let tarotDeck = [];
-
-async function loadTarotDeck() {
-  try {
-    const res = await fetch("data/tarot-positive-78.json");
-    if (!res.ok) throw new Error("Deck file not found");
-    tarotDeck = await res.json();
-  } catch (e) {
-    console.error("Error loading deck:", e);
-  }
-}
+// Tarot
+let tarotDeck = deck;
 
 function pickRandomCard() {
+  if (!tarotDeck?.length) throw new Error("Tarot deck is empty");
   return tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
 }
 
@@ -29,25 +26,26 @@ function renderResult({ name, uprightText, reversedText, reversed }) {
   const meaning = reversed ? reversedText : uprightText;
 
   const el = $("#result");
-  if (el) {
-    el.innerHTML = `
-      <div class="tarot-wrap">
-        <div class="tarot-card">
-          <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientation}</div>
-          <h3 class="card-title">${name}</h3>
-          <div class="card-divider"></div>
-          <p class="card-meaning">${meaning}</p>
-          <span class="corner-bl">✶</span>
-          <span class="corner-br">✶</span>
-        </div>
+  if (!el) return;
+
+  el.innerHTML = `
+    <div class="tarot-wrap">
+      <div class="tarot-card">
+        <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientation}</div>
+        <h3 class="card-title">${name}</h3>
+        <div class="card-divider"></div>
+        <p class="card-meaning">${meaning}</p>
+        <span class="corner-bl">✶</span>
+        <span class="corner-br">✶</span>
       </div>
-    `;
-  }
+    </div>
+  `;
 }
 
 async function handleDraw() {
   const btn = $("#drawBtn");
   if (!btn) return;
+
   btn.disabled = true;
   btn.textContent = "Drawing…";
 
@@ -63,9 +61,7 @@ async function handleDraw() {
   } catch (e) {
     const el = $("#result");
     if (el) {
-      el.innerHTML = `
-        <p>Couldn’t draw a card. Check <code>data/tarot-positive-78.json</code>.</p>
-      `;
+      el.innerHTML = `<p>Couldn’t draw a card. Check the tarot deck JSON file.</p>`;
     }
     console.error("Card draw failed:", e);
   } finally {
@@ -74,20 +70,28 @@ async function handleDraw() {
   }
 }
 
-// ---------- AFFIRMATIONS (API) ----------
+// Affirmations
 async function fetchAffirmation() {
-  const url = "https://www.affirmations.dev/?t=" + new Date().getTime();
-  const res = await fetch(
-    "https://api.allorigins.win/get?url=" + encodeURIComponent(url)
-  );
-  if (!res.ok) throw new Error("Affirmations API error");
-  const data = await res.json();
-  return JSON.parse(data.contents);
+  const url = `${AFFIRM_API}?t=${Date.now()}`;
+
+  try {
+    if (CORS_PROXY) {
+      const res = await axios.get(`${CORS_PROXY}${encodeURIComponent(url)}`);
+      return JSON.parse(res.data?.contents || "{}");
+    } else {
+      const res = await axios.get(url);
+      return res.data;
+    }
+  } catch (e) {
+    console.error("Affirmations API failed:", e);
+    throw e;
+  }
 }
 
 function renderAffirmationCard(text) {
   const target = $("#affResult");
   if (!target) return;
+
   target.innerHTML = `
     <div class="affirm-wrap">
       <div class="affirm-card">
@@ -105,6 +109,7 @@ function renderAffirmationCard(text) {
 async function handleAffirmation() {
   const btn = $("#affBtn");
   if (!btn) return;
+
   btn.disabled = true;
   btn.textContent = "Fetching…";
 
@@ -124,7 +129,7 @@ async function handleAffirmation() {
   }
 }
 
-// ---------- SPA RENDER ----------
+// SPA Render
 const router = new Navigo("/");
 
 function render(state = store.home) {
@@ -135,10 +140,8 @@ function render(state = store.home) {
     ${footer()}
   `;
 
-  // let Navigo manage <a data-navigo>
   router.updatePageLinks();
 
-  // attach events ONLY when Daily view is rendered
   if (state.view === "daily") {
     const drawBtn = $("#drawBtn");
     const affBtn = $("#affBtn");
@@ -146,7 +149,6 @@ function render(state = store.home) {
     if (affBtn) affBtn.addEventListener("click", handleAffirmation);
   }
 
-  // optional: mobile menu toggle
   const toggle = document.querySelector(".nav-toggle");
   const navEl = document.querySelector(".nav");
   if (toggle && navEl) {
@@ -154,10 +156,9 @@ function render(state = store.home) {
   }
 }
 
-// 404 handler
+// Router
 router.notFound(() => render(store.viewNotFound));
 
-// routes
 router.on({
   "/": () => render(),
   "/:view": match => {
@@ -171,8 +172,7 @@ router.on({
   }
 });
 
-// ---------- INIT ----------
+// Init
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadTarotDeck();
   router.resolve();
 });

@@ -1,6 +1,6 @@
 import html from "html-literal";
 import heroImg from "url:../images/DrawTarotCard.jpg";
-import tarotDeck from "../data/tarot-positive-78.json";
+import tarotDeck from "../src/data/tarot-positive-78.json";
 
 // pick a random card from the deck
 function pickRandomCard() {
