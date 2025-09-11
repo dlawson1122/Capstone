@@ -59,19 +59,19 @@ body {
 
   .nav .menu li { list-style: none; }
 
-/* pill + white text so it doesn't blend in */
-.nav .menu a {
-  color: #fff;
-  background: #004D40;   /* Brunswick Green */
-  padding: 6px 10px;
-  border-radius: 6px;
-}
+  /* pill + white text so it doesn't blend in */
+  .nav .menu a {
+    color: #fff;
+    background: #004D40;   /* Brunswick Green */
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
 
-.nav .menu a:hover,
-.nav .menu a[aria-current="page"] {
-  background: #FF7043;   /* Coral for hover/active */
-  color: #fff;
-}
+  .nav .menu a:hover,
+  .nav .menu a[aria-current="page"] {
+    background: #FF7043;   /* Coral for hover/active */
+    color: #fff;
+  }
 }
 
 /* Hero */
@@ -99,25 +99,37 @@ button {
 button:hover { background: #004D40; transform: translateY(-2px); }
 button:disabled { background: #999; cursor: not-allowed; transform: none; }
 
-/* Tarot */
-.tarot-wrap { display: flex; justify-content: center; }
-.tarot-card {
+/* ===========================
+   Unified Card Look (Tarot / Affirmation / Journal)
+   =========================== */
+.tarot-wrap,
+.affirm-wrap { display: flex; justify-content: center; }
+
+.tarot-card,
+.affirm-card,
+.journal-card {
   position: relative;
-  max-width: 420px; width: 92%;
+  max-width: 520px; width: 92%;
   margin: 32px auto 20px;
-  padding: 32px 20px 24px;
+  padding: 32px 22px 24px;
   border-radius: 16px;
-  border: 2px solid #caa75a;
-  outline: 6px double #d9bf72;
+  border: 2px solid #caa75a;             /* gold edge */
+  outline: 6px double #d9bf72;            /* ornate frame */
   background: linear-gradient(180deg, #f8f1e3, #f4ecd8);
   box-shadow: 0 14px 30px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.12);
 }
-.tarot-ribbon {
+
+.tarot-ribbon,
+.affirm-ribbon,
+.journal-ribbon {
   position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
   padding: 6px 20px; border-radius: 999px;
-  background: #4DB6AC; color: #fff; font-weight: 700; font-size: 14px;
+  background: #4DB6AC; color: #fff; font-weight: 800; font-size: 14px;
 }
+
+/* keep contrast for reversed tarot cards */
 .tarot-ribbon.reversed { background: #004D40; }
+
 .card-title {
   text-align: center; text-transform: uppercase; letter-spacing: .08em;
   font-weight: 800; color: #2c3e36; margin: 8px 0;
@@ -127,23 +139,38 @@ button:disabled { background: #999; cursor: not-allowed; transform: none; }
   background: linear-gradient(90deg, rgba(202,167,90,0), #caa75a, rgba(202,167,90,0));
 }
 .card-meaning {
-  max-width: 42ch; margin: 0 auto; font-size: 16px; line-height: 1.65;
+  max-width: 46ch; margin: 0 auto; font-size: 16px; line-height: 1.7;
   color: #2f2a22; text-align: center;
 }
 
-/* Affirmation */
-.affirm-wrap { display: flex; justify-content: center; }
-.affirm-card {
-  position: relative; max-width: 420px; width: 92%;
-  margin: 32px auto 20px; padding: 28px 20px 22px;
-  border-radius: 16px; border: 2px solid #9fd9d2; outline: 6px double #cbeeea;
-  background: linear-gradient(180deg, #ffffff, #f6fbfa);
-  box-shadow: 0 10px 24px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.08);
+/* Journal form controls to match the card vibe */
+.journal-card input[type="text"],
+.journal-card textarea,
+.journal-card select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #caa75a;
+  border-radius: 10px;
+  background: #fff8ea;
+  outline: none;
 }
-.affirm-ribbon {
-  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-  padding: 6px 18px; border-radius: 999px;
-  background: #79cbc2; color: #fff; font-weight: 700; font-size: 14px;
+.journal-card textarea { resize: vertical; }
+.journal-card input:focus,
+.journal-card textarea:focus,
+.journal-card select:focus {
+  box-shadow: 0 0 0 3px rgba(77,182,172,.25);
+  border-color: #d9bf72;
+}
+
+/* Journal list layout */
+.entries-stack {
+  max-width: 720px;
+  margin: 12px auto 40px;
+  display: grid;
+  gap: 20px;
+}
+.entry-meta {
+  display: block; text-align: center; color: #6b7a76; font-size: 12px; margin-top: 8px;
 }
 
 /* Footer */
