@@ -5,52 +5,132 @@ import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import adviceEntry from "./models/adviceEntry.js";
+
 
 dotenv.config();
 
-// init
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.API_PORT || 3000;
 
-// --- Mongo ---
 mongoose.connect(process.env.MONGODB);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection Error:"));
-db.once("open", () => console.log("✅ Successfully opened connection to Mongo!"));
+db.once("open", () => console.log("Connected to Mongo"));
 
-// --- middleware ---
 app.use(cors());
 app.use(express.json());
 
-// logging (kept from your class file)
 const logging = (req, _res, next) => {
   console.log(`${req.method} ${req.url} ${new Date().toLocaleString("en-us")}`);
   next();
 };
 app.use(logging);
 
-// --- base routes ---
-app.get("/", (_req, res) => {
-  res.send("Welcome to Reframe It API");
-});
+app.get("/", (_req, res) => res.send("Welcome to Reframe It API"));
 
 app.get("/status", (_req, res) => {
   res.json({ message: "Service healthy" });
 });
 
-// --- AFFIRMATIONS (proxy to avoid CORS) ---
+// Advice CRUD
+app.post("/api/advice", async (req, res) => {
+  try {
+    const doc = await adviceEntry.create({
+      penName: req.body.penName ?? "",
+      hurdle:  req.body.hurdle  ?? "",
+      learned: req.body.learned ?? "",
+      helps:   req.body.helps   ?? "",
+      advice:  req.body.advice  ?? "",
+      mood:    req.body.mood    ?? "",
+      tags: Array.isArray(req.body.tags) ? req.body.tags : []
+    });
+    res.status(201).json(doc);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "failed to create advice" });
+  }
+});
+
+app.get("/api/advice", async (_req, res) => {
+  try {
+    const rows = await adviceEntry.find().sort({ createdAt: -1 }).limit(50);
+    res.json(rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "failed to fetch advice" });
+  }
+});
+
+app.get("/api/advice/:id", async (req, res) => {
+  try {
+    const row = await adviceEntry.findById(req.params.id);
+    if (!row) return res.status(404).json({ error: "not found" });
+    res.json(row);
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: "invalid id" });
+  }
+});
+
+// optional: helpful counter
+app.post("/api/advice/:id/helpful", async (req, res) => {
+  try {
+    const row = await adviceEntry.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { helpfulCount: 1 } },
+      { new: true }
+    );
+    if (!row) return res.status(404).json({ error: "not found" });
+    res.json(row);
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: "invalid id" });
+  }
+});
+
+app.put("/api/advice/:id", async (req, res) => {
+  try {
+    const update = {};
+    ["penName", "hurdle", "learned", "helps", "advice", "mood", "tags"].forEach(k => {
+      if (typeof req.body[k] !== "undefined") update[k] = req.body[k];
+    });
+    const updated = await adviceEntry.findByIdAndUpdate(
+      req.params.id,
+      update,
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ error: "not found" });
+    res.json(updated);
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: "invalid id or bad data" });
+  }
+});
+
+app.delete("/api/advice/:id", async (req, res) => {
+  try {
+    const result = await adviceEntry.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ error: "not found" });
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(400).json({ error: "invalid id" });
+  }
+});
+
+// Affirmations
 app.get("/affirmation", async (_req, res) => {
   try {
     const r = await fetch("https://www.affirmations.dev/");
-    const data = await r.json();
-    res.status(r.ok ? 200 : 502).json(data);
+    res.status(r.ok ? 200 : 502).json(await r.json());
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to fetch affirmation" });
   }
 });
 
-// --- TAROT (local JSON) ---
+// Tarot
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -65,9 +145,7 @@ if (fs.existsSync(tarotPath)) {
   }
 }
 
-app.get("/tarot", (_req, res) => {
-  res.json({ count: deck.length, cards: deck });
-});
+app.get("/tarot", (_req, res) => res.json({ count: deck.length, cards: deck }));
 
 app.get("/tarot/draw", (req, res) => {
   const count = Math.max(1, Math.min(10, Number(req.query.count) || 1));
@@ -85,74 +163,6 @@ app.get("/tarot/draw", (req, res) => {
   res.json({ draw });
 });
 
-// --- JOURNAL (Mongo) ---
-const EntrySchema = new mongoose.Schema(
-  {
-    text: { type: String, default: "" },           // your note/reflection
-    cards: { type: [Object], default: [] },        // tarot draw you saved
-    mood: { type: String, default: "" },           // optional
-    tags: { type: [String], default: [] }          // optional
-  },
-  { timestamps: true }
-);
-
-// force exact collection "journalentries"
-const journalEntry =
-  mongoose.models.journalEntry ||
-  mongoose.model("journalEntry", EntrySchema, "journalentries");
-
-// create entry
-app.post("/api/journal", async (req, res) => {
-  try {
-    const doc = await journalEntry.create({
-      text: req.body.text ?? "",
-      cards: Array.isArray(req.body.cards) ? req.body.cards : [],
-      mood: req.body.mood ?? "",
-      tags: Array.isArray(req.body.tags) ? req.body.tags : []
-    });
-    res.status(201).json(doc);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "failed to create entry" });
-  }
+const server = app.listen(PORT, () => {
+  console.log(`Listening on port ${server.address().port}`);
 });
-
-// list recent entries
-app.get("/api/journal", async (_req, res) => {
-  try {
-    const rows = await journalEntry.find().sort({ createdAt: -1 }).limit(20);
-    res.json(rows);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "failed to fetch entries" });
-  }
-});
-
-// read one entry
-app.get("/api/journal/:id", async (req, res) => {
-  try {
-    const row = await journalEntry.findById(req.params.id);
-    if (!row) return res.status(404).json({ error: "not found" });
-    res.json(row);
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id" });
-  }
-});
-
-// delete one entry
-app.delete("/api/journal/:id", async (req, res) => {
-  try {
-    const result = await journalEntry.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ error: "not found" });
-    res.json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id" });
-  }
-});
-
-// --- start ---
-const server = app.listen(PORT, () =>
-  console.log(`🚀 Listening on port ${server.address().port}`)
-);
