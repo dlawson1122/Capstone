@@ -2,5 +2,5 @@ export default [
   { url: "/home", text: "Home" },
   { url: "/about", text: "About" },
   { url: "/daily", text: "Daily Insight" },
-  { url: "/journal", text: "Journal" }
+  { url: "/advice", text: "ReframeIT Advice Wall" }
 ];

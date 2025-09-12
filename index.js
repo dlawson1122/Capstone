@@ -6,10 +6,9 @@ import { camelCase } from "lodash";
 import axios from "axios";
 import deck from "./src/data/tarot-positive-78.json"; // direct import with Parcel
 
-// Env Vars (Parcel reads .env into process.env at build time)
+// .Env Vars
 const AFFIRM_API = process.env.AFFIRMATION_API;
 const CORS_PROXY = process.env.CORS_PROXY;
-// One place for API base (use your backend URL in production via .env)
 const API = process.env.API_BASE || "http://localhost:3000";
 
 // Helpers
@@ -27,6 +26,7 @@ function renderResult({ name, uprightText, reversedText, reversed }) {
   const orientation = reversed ? "Reversed" : "Upright";
   const meaning = reversed ? reversedText : uprightText;
 
+// could have a card component - so we could have more than one card
   const el = $("#result");
   if (!el) return;
 
@@ -151,72 +151,102 @@ function render(state = store.home) {
     if (affBtn) affBtn.addEventListener("click", handleAffirmation);
   }
 
-  if (state.view === "journal") {
-    const form = document.getElementById("journalForm");
-    const entriesEl = document.getElementById("entries");
+ if (state.view === "advice") {
+  const form = document.getElementById("adviceForm");
+  const listEl = document.getElementById("adviceList"); // was "entries"
 
-    // load existing
-    fetch(`${API}/api/journal`)
-      .then(r => r.json())
-      .then(items => {
-        entriesEl.innerHTML = items.map(e => `
-          <article class="journal-card" data-id="${e._id}">
-            <div class="journal-ribbon">${e.mood || "Entry"}</div>
-            <h3 class="card-title">${e.title || "(untitled)"}</h3>
+  // load existing
+  fetch(`${API}/api/advice`)
+    .then(r => r.json())
+    .then(items => {
+      listEl.innerHTML =
+        items.map(e => `
+          <article class="journal-card" data-id="${e._id}"> <!-- keep your existing card styles -->
+            <div class="journal-ribbon">${e.penName || "Someone"}</div>
+            <h3 class="card-title">${e.hurdle || "(untitled hurdle)"}</h3>
             <div class="card-divider"></div>
-            <p class="card-meaning" style="white-space:pre-wrap">${e.body || e.text || ""}</p>
+            <p class="card-meaning"><strong>What I learned:</strong> ${e.learned || ""}</p>
+            <p class="card-meaning"><strong>How it helps:</strong> ${e.helps || ""}</p>
+            <p class="card-meaning"><strong>Advice:</strong> ${e.advice || ""}</p>
             <span class="corner-bl">✶</span>
             <span class="corner-br">✶</span>
-            <span class="entry-meta">${new Date(e.createdAt).toLocaleString()}</span>
+            <span class="entry-meta">
+              ${new Date(e.createdAt).toLocaleString()}
+              ${(e.tags && e.tags.length) ? ` • <em>${e.tags.join(", ")}</em>` : ""}
+            </span>
+            <button class="helpfulBtn" data-id="${e._id}">👍 Helpful (${e.helpfulCount || 0})</button>
           </article>
-        `).join("") || "<p style='text-align:center'>No entries yet.</p>";
-      })
-      .catch(() => entriesEl.innerHTML = "<p>Couldn’t load entries.</p>");
+        `).join("") || "<p style='text-align:center'>No advice yet.</p>";
 
-    // submit new
-    if (form) {
-      form.addEventListener("submit", async e => {
-        e.preventDefault();
-        const btn = form.querySelector('button[type="submit"]');
-        btn.disabled = true;
-
-        const payload = {
-          title: form.title?.value?.trim() || "",
-          body: form.body?.value?.trim() || "",
-          mood: form.mood?.value || ""
-        };
-
-        try {
-          const res = await fetch(`${API}/api/journal`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const created = await res.json();
-
-          // prepend (same card structure)
-          entriesEl.innerHTML = `
-            <article class="journal-card" data-id="${created._id}">
-              <div class="journal-ribbon">${created.mood || "Entry"}</div>
-              <h3 class="card-title">${created.title || "(untitled)"}</h3>
-              <div class="card-divider"></div>
-              <p class="card-meaning" style="white-space:pre-wrap">${created.body || created.text || ""}</p>
-              <span class="corner-bl">✶</span>
-              <span class="corner-br">✶</span>
-              <span class="entry-meta">${new Date(created.createdAt).toLocaleString()}</span>
-            </article>
-          ` + entriesEl.innerHTML;
-
-          form.reset();
-        } catch (err) {
-          console.error(err);
-          alert("Saving failed.");
-        } finally {
-          btn.disabled = false;
-        }
+      // hook up Helpful buttons
+      listEl.querySelectorAll(".helpfulBtn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          btn.disabled = true;
+          try {
+            const r = await fetch(`${API}/api/advice/${id}/helpful`, { method: "POST" });
+            const updated = await r.json();
+            btn.textContent = `👍 Helpful (${updated.helpfulCount || 0})`;
+          } catch {
+            alert("Couldn’t mark as helpful.");
+          } finally {
+            btn.disabled = false;
+          }
+        });
       });
-    }
+    })
+    .catch(() => (listEl.innerHTML = "<p>Couldn’t load advice.</p>"));
+
+  // submit new
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+
+      const payload = {
+        penName: form.penName?.value?.trim() || "",
+        hurdle:  form.hurdle?.value?.trim()  || "",
+        learned: form.learned?.value?.trim() || "",
+        helps:   form.helps?.value?.trim()   || "",
+        advice:  form.advice?.value?.trim()  || "",
+        mood:    form.mood?.value || ""
+      };
+
+      try {
+        const res = await fetch(`${API}/api/advice`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const created = await res.json();
+
+        // prepend
+        listEl.innerHTML = `
+          <article class="journal-card" data-id="${created._id}">
+            <div class="journal-ribbon">${created.penName || "Someone"}</div>
+            <h3 class="card-title">${created.hurdle || "(untitled hurdle)"}</h3>
+            <div class="card-divider"></div>
+            <p class="card-meaning"><strong>What I learned:</strong> ${created.learned || ""}</p>
+            <p class="card-meaning"><strong>How it helps:</strong> ${created.helps || ""}</p>
+            <p class="card-meaning"><strong>Advice:</strong> ${created.advice || ""}</p>
+            <span class="corner-bl">✶</span>
+            <span class="corner-br">✶</span>
+            <span class="entry-meta">${new Date(created.createdAt).toLocaleString()}</span>
+            <button class="helpfulBtn" data-id="${created._id}">👍 Helpful (0)</button>
+          </article>
+        ` + listEl.innerHTML;
+
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Saving failed.");
+      } finally {
+        btn.disabled = false;
+      }
+    });
   }
+}
 
   const toggle = document.querySelector(".nav-toggle");
   const navEl = document.querySelector(".nav");
@@ -245,3 +275,4 @@ router.on({
 document.addEventListener("DOMContentLoaded", async () => {
   router.resolve();
 });
+
