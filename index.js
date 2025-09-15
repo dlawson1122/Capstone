@@ -4,39 +4,39 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
-import deck from "./src/data/tarot-positive-78.json"; // direct import with Parcel
+import tarotDeckJson from "./src/data/tarot-positive-78.json"; // direct import with Parcel
 
-// .Env Vars
-const AFFIRM_API = process.env.AFFIRMATION_API;
-const CORS_PROXY = process.env.CORS_PROXY;
-const API = process.env.API_BASE || "http://localhost:3000";
+// Environment Vars
+const AFFIRM_API_URL = process.env.AFFIRMATION_API;
+const CORS_PROXY_URL = process.env.CORS_PROXY;
+const API_URL = process.env.API_BASE || "http://localhost:3000";
 
-// Helpers
-const $ = sel => document.querySelector(sel);
+// DOM Helper
+const selectElement = selector => document.querySelector(selector);
 
 // Tarot
-let tarotDeck = deck;
+let tarotDeck = tarotDeckJson;
 
-function pickRandomCard() {
+function getRandomCard() {
   if (!tarotDeck?.length) throw new Error("Tarot deck is empty");
-  return tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+  const randomIndex = Math.floor(Math.random() * tarotDeck.length);
+  return tarotDeck[randomIndex];
 }
 
-function renderResult({ name, uprightText, reversedText, reversed }) {
-  const orientation = reversed ? "Reversed" : "Upright";
-  const meaning = reversed ? reversedText : uprightText;
+function showCard({ name, uprightText, reversedText, reversed }) {
+  const orientationLabel = reversed ? "Reversed" : "Upright";
+  const meaningText = reversed ? reversedText : uprightText;
 
-// could have a card component - so we could have more than one card
-  const el = $("#result");
-  if (!el) return;
+  const resultElement = selectElement("#result");
+  if (!resultElement) return;
 
-  el.innerHTML = `
+  resultElement.innerHTML = `
     <div class="tarot-wrap">
       <div class="tarot-card">
-        <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientation}</div>
+        <div class="tarot-ribbon ${reversed ? "reversed" : ""}">${orientationLabel}</div>
         <h3 class="card-title">${name}</h3>
         <div class="card-divider"></div>
-        <p class="card-meaning">${meaning}</p>
+        <p class="card-meaning">${meaningText}</p>
         <span class="corner-bl">✶</span>
         <span class="corner-br">✶</span>
       </div>
@@ -44,63 +44,67 @@ function renderResult({ name, uprightText, reversedText, reversed }) {
   `;
 }
 
-async function handleDraw() {
-  const btn = $("#drawBtn");
-  if (!btn) return;
+async function drawCard() {
+  const drawButton = selectElement("#drawBtn");
+  if (!drawButton) return;
 
-  btn.disabled = true;
-  btn.textContent = "Drawing…";
+  drawButton.disabled = true;
+  drawButton.textContent = "Drawing…";
 
   try {
-    const raw = pickRandomCard();
-    const reversed = Math.random() < 0.5;
-    renderResult({
-      name: raw.name,
-      uprightText: raw.meaning_up,
-      reversedText: raw.meaning_rev,
-      reversed
+    const randomCard = getRandomCard();
+    const isReversed = Math.random() < 0.5;
+
+    showCard({
+      name: randomCard.name,
+      uprightText: randomCard.meaning_up,
+      reversedText: randomCard.meaning_rev,
+      reversed: isReversed
     });
-  } catch (e) {
-    const el = $("#result");
-    if (el) {
-      el.innerHTML = `<p>Couldn’t draw a card. Check the tarot deck JSON file.</p>`;
+  } catch (error) {
+    const resultElement = selectElement("#result");
+    if (resultElement) {
+      resultElement.innerHTML = `<p>Couldn’t draw a card. Check the tarot deck JSON file.</p>`;
     }
-    console.error("Card draw failed:", e);
+    console.error("Card draw failed:", error);
   } finally {
-    btn.disabled = false;
-    btn.textContent = "Draw Card";
+    drawButton.disabled = false;
+    drawButton.textContent = "Draw Card";
   }
 }
 
 // Affirmations
-async function fetchAffirmation() {
-  const url = `${AFFIRM_API}?t=${Date.now()}`;
+async function getAffirmation() {
+  const requestUrl = `${AFFIRM_API_URL}?t=${Date.now()}`;
 
   try {
-    if (CORS_PROXY) {
-      const res = await axios.get(`${CORS_PROXY}${encodeURIComponent(url)}`);
-      return JSON.parse(res.data?.contents || "{}");
+    if (CORS_PROXY_URL) {
+      const proxyResponse = await axios.get(
+        `${CORS_PROXY_URL}${encodeURIComponent(requestUrl)}`
+      );
+      const proxiedJsonString = proxyResponse.data?.contents || "{}";
+      return JSON.parse(proxiedJsonString);
     } else {
-      const res = await axios.get(url);
-      return res.data;
+      const httpResponse = await axios.get(requestUrl);
+      return httpResponse.data;
     }
-  } catch (e) {
-    console.error("Affirmations API failed:", e);
-    throw e;
+  } catch (error) {
+    console.error("Affirmations API failed:", error);
+    throw error;
   }
 }
 
-function renderAffirmationCard(text) {
-  const target = $("#affResult");
-  if (!target) return;
+function showAffirmation(affirmationText) {
+  const affirmationElement = selectElement("#affResult");
+  if (!affirmationElement) return;
 
-  target.innerHTML = `
+  affirmationElement.innerHTML = `
     <div class="affirm-wrap">
       <div class="affirm-card">
         <div class="affirm-ribbon">Affirmation</div>
         <h3 class="card-title">Daily Reframe</h3>
         <div class="card-divider"></div>
-        <p class="card-meaning">${text}</p>
+        <p class="card-meaning">${affirmationText}</p>
         <span class="corner-bl">✶</span>
         <span class="corner-br">✶</span>
       </div>
@@ -108,171 +112,180 @@ function renderAffirmationCard(text) {
   `;
 }
 
-async function handleAffirmation() {
-  const btn = $("#affBtn");
-  if (!btn) return;
+async function onAffirmationClick() {
+  const affirmationButton = selectElement("#affBtn");
+  if (!affirmationButton) return;
 
-  btn.disabled = true;
-  btn.textContent = "Fetching…";
+  affirmationButton.disabled = true;
+  affirmationButton.textContent = "Fetching…";
 
   try {
-    const data = await fetchAffirmation();
-    renderAffirmationCard(
-      data.affirmation || "You are doing better than you think."
+    const affirmationApiData = await getAffirmation();
+    showAffirmation(
+      affirmationApiData.affirmation || "You are doing better than you think."
     );
-  } catch (e) {
-    console.error("Affirmations API failed:", e);
-    renderAffirmationCard(
-      "A gentle reminder: you’re resilient and resourceful."
-    );
+  } catch (error) {
+    console.error("Affirmations API failed:", error);
+    showAffirmation("A gentle reminder: you’re resilient and resourceful.");
   } finally {
-    btn.disabled = false;
-    btn.textContent = "Get Affirmation";
+    affirmationButton.disabled = false;
+    affirmationButton.textContent = "Get Affirmation";
   }
 }
 
 // SPA Render
-const router = new Navigo("/");
+const appRouter = new Navigo("/");
+// wrapper so it reads as "updatePage"
+const updatePage = () => appRouter.updatePageLinks();
 
-function render(state = store.home) {
-  document.querySelector("#root").innerHTML = `
-    ${header(state)}
+function renderApp(currentState = store.home) {
+  const rootElement = selectElement("#root");
+  rootElement.innerHTML = `
+    ${header(currentState)}
     ${nav(store.nav)}
-    ${main(state)}
+    ${main(currentState)}
     ${footer()}
   `;
 
-  router.updatePageLinks();
+  updatePage();
 
-  if (state.view === "daily") {
-    const drawBtn = $("#drawBtn");
-    const affBtn = $("#affBtn");
-    if (drawBtn) drawBtn.addEventListener("click", handleDraw);
-    if (affBtn) affBtn.addEventListener("click", handleAffirmation);
+  if (currentState.view === "daily") {
+    const drawButton = selectElement("#drawBtn");
+    const affirmationButton = selectElement("#affBtn");
+    if (drawButton) drawButton.addEventListener("click", drawCard);
+    if (affirmationButton) affirmationButton.addEventListener("click", onAffirmationClick);
   }
 
- if (state.view === "advice") {
-  const form = document.getElementById("adviceForm");
-  const listEl = document.getElementById("adviceList"); // was "entries"
+  if (currentState.view === "advice") {
+    const adviceFormElement = document.getElementById("adviceForm");
+    const adviceListElement = document.getElementById("adviceList");
 
-  // load existing
-  fetch(`${API}/api/advice`)
-    .then(r => r.json())
-    .then(items => {
-      listEl.innerHTML =
-        items.map(e => `
-          <article class="journal-card" data-id="${e._id}"> <!-- keep your existing card styles -->
-            <div class="journal-ribbon">${e.penName || "Someone"}</div>
-            <h3 class="card-title">${e.hurdle || "(untitled hurdle)"}</h3>
-            <div class="card-divider"></div>
-            <p class="card-meaning"><strong>What I learned:</strong> ${e.learned || ""}</p>
-            <p class="card-meaning"><strong>How it helps:</strong> ${e.helps || ""}</p>
-            <p class="card-meaning"><strong>Advice:</strong> ${e.advice || ""}</p>
-            <span class="corner-bl">✶</span>
-            <span class="corner-br">✶</span>
-            <span class="entry-meta">
-              ${new Date(e.createdAt).toLocaleString()}
-              ${(e.tags && e.tags.length) ? ` • <em>${e.tags.join(", ")}</em>` : ""}
-            </span>
-            <button class="helpfulBtn" data-id="${e._id}">👍 Helpful (${e.helpfulCount || 0})</button>
-          </article>
-        `).join("") || "<p style='text-align:center'>No advice yet.</p>";
+    // load existing advice
+    fetch(`${API_URL}/api/advice`)
+      .then(fetchResponse => fetchResponse.json())
+      .then((adviceItems = []) => {
+        adviceListElement.innerHTML =
+          adviceItems
+            .map(adviceItem => `
+              <article class="journal-card" data-id="${adviceItem._id}">
+                <div class="journal-ribbon">${adviceItem.penName || "Someone"}</div>
+                <h3 class="card-title">${adviceItem.hurdle || "(untitled hurdle)"}</h3>
+                <div class="card-divider"></div>
+                <p class="card-meaning"><strong>What I learned:</strong> ${adviceItem.learned || ""}</p>
+                <p class="card-meaning"><strong>How it helps:</strong> ${adviceItem.helps || ""}</p>
+                <p class="card-meaning"><strong>Advice:</strong> ${adviceItem.advice || ""}</p>
+                <span class="corner-bl">✶</span>
+                <span class="corner-br">✶</span>
+                <span class="entry-meta">
+                  ${new Date(adviceItem.createdAt).toLocaleString()}
+                  ${(adviceItem.tags?.length) ? ` • <em>${adviceItem.tags.join(", ")}</em>` : ""}
+                </span>
+                <button class="helpfulBtn" data-id="${adviceItem._id}">
+                  👍 Helpful (${adviceItem.helpfulCount || 0})
+                </button>
+              </article>
+            `)
+            .join("") || "<p style='text-align:center'>No advice yet.</p>";
 
-      // hook up Helpful buttons
-      listEl.querySelectorAll(".helpfulBtn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const id = btn.dataset.id;
-          btn.disabled = true;
-          try {
-            const r = await fetch(`${API}/api/advice/${id}/helpful`, { method: "POST" });
-            const updated = await r.json();
-            btn.textContent = `👍 Helpful (${updated.helpfulCount || 0})`;
-          } catch {
-            alert("Couldn’t mark as helpful.");
-          } finally {
-            btn.disabled = false;
-          }
+        // hook up Helpful buttons
+        adviceListElement.querySelectorAll(".helpfulBtn").forEach(helpfulButtonElement => {
+          helpfulButtonElement.addEventListener("click", async () => {
+            const adviceEntryId = helpfulButtonElement.dataset.id;
+            helpfulButtonElement.disabled = true;
+            try {
+              const markHelpfulResponse = await fetch(
+                `${API_URL}/api/advice/${adviceEntryId}/helpful`,
+                { method: "POST" }
+              );
+              const updatedAdviceItem = await markHelpfulResponse.json();
+              helpfulButtonElement.textContent = `👍 Helpful (${updatedAdviceItem.helpfulCount || 0})`;
+            } catch {
+              alert("Couldn’t mark as helpful.");
+            } finally {
+              helpfulButtonElement.disabled = false;
+            }
+          });
         });
+      })
+      .catch(() => {
+        adviceListElement.innerHTML = "<p>Couldn’t load advice.</p>";
       });
-    })
-    .catch(() => (listEl.innerHTML = "<p>Couldn’t load advice.</p>"));
 
-  // submit new
-  if (form) {
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
+    // submit new advice
+    if (adviceFormElement) {
+      adviceFormElement.addEventListener("submit", async submitEvent => {
+        submitEvent.preventDefault();
+        const submitButtonElement = adviceFormElement.querySelector('button[type="submit"]');
+        submitButtonElement.disabled = true;
 
-      const payload = {
-        penName: form.penName?.value?.trim() || "",
-        hurdle:  form.hurdle?.value?.trim()  || "",
-        learned: form.learned?.value?.trim() || "",
-        helps:   form.helps?.value?.trim()   || "",
-        advice:  form.advice?.value?.trim()  || "",
-        mood:    form.mood?.value || ""
-      };
+        const advicePayload = {
+          penName: adviceFormElement.penName?.value?.trim() || "",
+          hurdle:  adviceFormElement.hurdle?.value?.trim()  || "",
+          learned: adviceFormElement.learned?.value?.trim() || "",
+          helps:   adviceFormElement.helps?.value?.trim()   || "",
+          advice:  adviceFormElement.advice?.value?.trim()  || "",
+          mood:    adviceFormElement.mood?.value || ""
+        };
 
-      try {
-        const res = await fetch(`${API}/api/advice`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const created = await res.json();
+        try {
+          const createAdviceResponse = await fetch(`${API_URL}/api/advice`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(advicePayload)
+          });
+          const createdAdviceItem = await createAdviceResponse.json();
 
-        // prepend
-        listEl.innerHTML = `
-          <article class="journal-card" data-id="${created._id}">
-            <div class="journal-ribbon">${created.penName || "Someone"}</div>
-            <h3 class="card-title">${created.hurdle || "(untitled hurdle)"}</h3>
-            <div class="card-divider"></div>
-            <p class="card-meaning"><strong>What I learned:</strong> ${created.learned || ""}</p>
-            <p class="card-meaning"><strong>How it helps:</strong> ${created.helps || ""}</p>
-            <p class="card-meaning"><strong>Advice:</strong> ${created.advice || ""}</p>
-            <span class="corner-bl">✶</span>
-            <span class="corner-br">✶</span>
-            <span class="entry-meta">${new Date(created.createdAt).toLocaleString()}</span>
-            <button class="helpfulBtn" data-id="${created._id}">👍 Helpful (0)</button>
-          </article>
-        ` + listEl.innerHTML;
+          adviceListElement.innerHTML =
+            `
+              <article class="journal-card" data-id="${createdAdviceItem._id}">
+                <div class="journal-ribbon">${createdAdviceItem.penName || "Someone"}</div>
+                <h3 class="card-title">${createdAdviceItem.hurdle || "(untitled hurdle)"}</h3>
+                <div class="card-divider"></div>
+                <p class="card-meaning"><strong>What I learned:</strong> ${createdAdviceItem.learned || ""}</p>
+                <p class="card-meaning"><strong>How it helps:</strong> ${createdAdviceItem.helps || ""}</p>
+                <p class="card-meaning"><strong>Advice:</strong> ${createdAdviceItem.advice || ""}</p>
+                <span class="corner-bl">✶</span>
+                <span class="corner-br">✶</span>
+                <span class="entry-meta">${new Date(createdAdviceItem.createdAt).toLocaleString()}</span>
+                <button class="helpfulBtn" data-id="${createdAdviceItem._id}">👍 Helpful (0)</button>
+              </article>
+            ` + adviceListElement.innerHTML;
 
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        alert("Saving failed.");
-      } finally {
-        btn.disabled = false;
-      }
-    });
+          adviceFormElement.reset();
+        } catch (error) {
+          console.error(error);
+          alert("Saving failed.");
+        } finally {
+          submitButtonElement.disabled = false;
+        }
+      });
+    }
   }
-}
 
-  const toggle = document.querySelector(".nav-toggle");
-  const navEl = document.querySelector(".nav");
-  if (toggle && navEl) {
-    toggle.onclick = () => navEl.classList.toggle("open");
+  const navToggleButton = selectElement(".nav-toggle");
+  const navMenuElement = selectElement(".nav");
+  if (navToggleButton && navMenuElement) {
+    navToggleButton.onclick = () => navMenuElement.classList.toggle("open");
   }
 }
 
 // Router
-router.notFound(() => render(store.viewNotFound));
+appRouter.notFound(() => renderApp(store.viewNotFound));
 
-router.on({
-  "/": () => render(),
-  "/:view": match => {
-    const view = match?.data?.view ? camelCase(match.data.view) : "home";
-    if (view in store) {
-      render(store[view]);
+appRouter.on({
+  "/": () => renderApp(),
+  "/:view": routeMatch => {
+    const requestedView = routeMatch?.data?.view ? camelCase(routeMatch.data.view) : "home";
+    if (requestedView in store) {
+      renderApp(store[requestedView]);
     } else {
-      render(store.viewNotFound);
-      console.log(`View ${view} not defined`);
+      renderApp(store.viewNotFound);
+      console.log(`View ${requestedView} not defined`);
     }
   }
 });
 
 // Init
 document.addEventListener("DOMContentLoaded", async () => {
-  router.resolve();
+  appRouter.resolve();
 });
-
