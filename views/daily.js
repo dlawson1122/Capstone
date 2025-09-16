@@ -3,14 +3,14 @@ import heroImg from "url:../images/DrawTarotCard.jpg";
 import tarotDeck from "../src/data/tarot-positive-78.json";
 
 // pick a random card from the deck
-function pickRandomCard() {
-  const i = Math.floor(Math.random() * tarotDeck.length);
-  return tarotDeck[i];
+function getRandomCardFromDeck() {
+  const randomIndex = Math.floor(Math.random() * tarotDeck.length);
+  return tarotDeck[randomIndex];
 }
 
 // create the Daily view
 export default () => {
-  const view = html`
+  const dailyView = html`
     <main>
       <section class="hero">
         <img src="${heroImg}" alt="Draw a Tarot Card" />
@@ -34,82 +34,86 @@ export default () => {
 
   // attach button behavior after the HTML is rendered
   setTimeout(() => {
-    const drawBtn = document.getElementById("drawBtn");
-    const resultEl = document.getElementById("result");
-    if (drawBtn && resultEl) {
-      drawBtn.addEventListener("click", () => {
-        drawBtn.disabled = true;
-        drawBtn.textContent = "Drawing…";
+    const drawButton = document.getElementById("drawBtn");
+    const resultElement = document.getElementById("result");
+    if (drawButton && resultElement) {
+      drawButton.addEventListener("click", () => {
+        drawButton.disabled = true;
+        drawButton.textContent = "Drawing…";
 
         try {
-          const card = pickRandomCard();
-          const reversed = Math.random() < 0.5;
-          const orientation = reversed ? "Reversed" : "Upright";
-          const meaning = reversed ? card.meaning_rev : card.meaning_up;
+          const selectedCard = getRandomCardFromDeck();
+          const isReversed = Math.random() < 0.5;
+          const cardOrientation = isReversed ? "Reversed" : "Upright";
+          const cardMeaning = isReversed
+            ? selectedCard.meaning_rev
+            : selectedCard.meaning_up;
 
-          resultEl.innerHTML = `
+          resultElement.innerHTML = `
             <div class="tarot-wrap">
               <div class="tarot-card">
-                <div class="tarot-ribbon ${reversed ? "reversed" : ""}">
-                  ${orientation}
+                <div class="tarot-ribbon ${isReversed ? "reversed" : ""}">
+                  ${cardOrientation}
                 </div>
-                <h3 class="card-title">${card.name}</h3>
+                <h3 class="card-title">${selectedCard.name}</h3>
                 <div class="card-divider"></div>
-                <p class="card-meaning">${meaning}</p>
+                <p class="card-meaning">${cardMeaning}</p>
                 <span class="corner-bl">✶</span>
                 <span class="corner-br">✶</span>
               </div>
             </div>
           `;
-        } catch (e) {
-          console.error(e);
-          resultEl.innerHTML = `<p>Couldn’t draw a card.</p>`;
+        } catch (error) {
+          console.error(error);
+          resultElement.innerHTML = `<p>Couldn’t draw a card.</p>`;
         } finally {
-          drawBtn.disabled = false;
-          drawBtn.textContent = "Draw Card";
+          drawButton.disabled = false;
+          drawButton.textContent = "Draw Card";
         }
       });
     }
 
-    const affBtn = document.getElementById("affBtn");
-    const affEl = document.getElementById("affResult");
-    if (affBtn && affEl) {
-      affBtn.addEventListener("click", async () => {
-        affBtn.disabled = true;
-        affBtn.textContent = "Fetching…";
+    const affirmationButton = document.getElementById("affBtn");
+    const affirmationElement = document.getElementById("affResult");
+    if (affirmationButton && affirmationElement) {
+      affirmationButton.addEventListener("click", async () => {
+        affirmationButton.disabled = true;
+        affirmationButton.textContent = "Fetching…";
 
         try {
           // use a simple public CORS proxy to call the API
-          const res = await fetch(
+          const fetchResponse = await fetch(
             "https://api.allorigins.win/get?url=" +
               encodeURIComponent("https://www.affirmations.dev/")
           );
-          const data = await res.json();
-          const parsed = JSON.parse(data.contents);
-          const text = parsed?.affirmation || "You are doing better than you think.";
+          const affirmationData = await fetchResponse.json();
+          const parsedResponse = JSON.parse(affirmationData.contents);
+          const affirmationText =
+            parsedResponse?.affirmation ||
+            "You are doing better than you think.";
 
-          affEl.innerHTML = `
+          affirmationElement.innerHTML = `
             <div class="affirm-wrap">
               <div class="affirm-card">
                 <div class="affirm-ribbon">Affirmation</div>
                 <h3 class="card-title">Daily Reframe</h3>
                 <div class="card-divider"></div>
-                <p class="card-meaning">${text}</p>
+                <p class="card-meaning">${affirmationText}</p>
                 <span class="corner-bl">✶</span>
                 <span class="corner-br">✶</span>
               </div>
             </div>
           `;
-        } catch (e) {
-          console.error(e);
-          affEl.innerHTML = `<p>A gentle reminder: you’re resilient and resourceful.</p>`;
+        } catch (error) {
+          console.error(error);
+          affirmationElement.innerHTML = `<p>A gentle reminder: you’re resilient and resourceful.</p>`;
         } finally {
-          affBtn.disabled = false;
-          affBtn.textContent = "Get Affirmation";
+          affirmationButton.disabled = false;
+          affirmationButton.textContent = "Get Affirmation";
         }
       });
     }
   }, 0);
 
-  return view;
+  return dailyView;
 };
