@@ -5,8 +5,7 @@ import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import adviceEntry from "./models/adviceEntry.js";
-
+import adviceController from "./controllers/advice.js";
 
 dotenv.config();
 
@@ -20,6 +19,8 @@ db.once("open", () => console.log("Connected to Mongo"));
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/advice", adviceController);
+
 
 const logging = (req, _res, next) => {
   console.log(`${req.method} ${req.url} ${new Date().toLocaleString("en-us")}`);
@@ -33,91 +34,7 @@ app.get("/status", (_req, res) => {
   res.json({ message: "Service healthy" });
 });
 
-// Advice CRUD
-app.post("/api/advice", async (req, res) => {
-  try {
-    const doc = await adviceEntry.create({
-      penName: req.body.penName ?? "",
-      hurdle:  req.body.hurdle  ?? "",
-      learned: req.body.learned ?? "",
-      helps:   req.body.helps   ?? "",
-      advice:  req.body.advice  ?? "",
-      mood:    req.body.mood    ?? "",
-      tags: Array.isArray(req.body.tags) ? req.body.tags : []
-    });
-    res.status(201).json(doc);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "failed to create advice" });
-  }
-});
 
-app.get("/api/advice", async (_req, res) => {
-  try {
-    const rows = await adviceEntry.find().sort({ createdAt: -1 }).limit(50);
-    res.json(rows);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "failed to fetch advice" });
-  }
-});
-
-app.get("/api/advice/:id", async (req, res) => {
-  try {
-    const row = await adviceEntry.findById(req.params.id);
-    if (!row) return res.status(404).json({ error: "not found" });
-    res.json(row);
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id" });
-  }
-});
-
-// optional: helpful counter
-app.post("/api/advice/:id/helpful", async (req, res) => {
-  try {
-    const row = await adviceEntry.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { helpfulCount: 1 } },
-      { new: true }
-    );
-    if (!row) return res.status(404).json({ error: "not found" });
-    res.json(row);
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id" });
-  }
-});
-
-app.put("/api/advice/:id", async (req, res) => {
-  try {
-    const update = {};
-    ["penName", "hurdle", "learned", "helps", "advice", "mood", "tags"].forEach(k => {
-      if (typeof req.body[k] !== "undefined") update[k] = req.body[k];
-    });
-    const updated = await adviceEntry.findByIdAndUpdate(
-      req.params.id,
-      update,
-      { new: true, runValidators: true }
-    );
-    if (!updated) return res.status(404).json({ error: "not found" });
-    res.json(updated);
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id or bad data" });
-  }
-});
-
-app.delete("/api/advice/:id", async (req, res) => {
-  try {
-    const result = await adviceEntry.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ error: "not found" });
-    res.json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    res.status(400).json({ error: "invalid id" });
-  }
-});
 
 // Affirmations
 app.get("/affirmation", async (_req, res) => {

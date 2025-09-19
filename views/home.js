@@ -3,8 +3,8 @@ import logo from "url:../images/logo.png";
 
 export default () => html`
   <main>
-    <section class="hero">
-      <img src="${logo}" alt="Reframe your mindset logo" />
+    <section class="hero hero--home">
+      <img src="${logo}" alt="ReframeIT logo" />
     </section>
 
     <section class="about-card">

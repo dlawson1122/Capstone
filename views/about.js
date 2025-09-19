@@ -3,17 +3,17 @@ import heroImg from "url:../images/reframeIT.jpg";
 
 export default () => html`
   <main>
-    <section class="hero">
-      <img src="${heroImg}" alt="Cosmic brain and tree illustration" />
+    <section class="hero hero--about">
+      <img src="${heroImg}" alt="Peacock Feather Photograph" />
     </section>
 
     <section class="about-card">
       <h2>Our Mission</h2>
       <p>
-        Reframe It was created to give people a practical, uplifting way to shift
-        their perspective. By blending symbolic traditions like Tarot with modern
-        psychology and daily affirmations, we aim to help you rewire limiting
-        beliefs into empowering ones.
+        Reframe It was created to give people a practical, uplifting way to
+        shift their perspective. By blending symbolic traditions like Tarot with
+        modern psychology and daily affirmations, we aim to help you rewire
+        limiting beliefs into empowering ones.
       </p>
     </section>
 
