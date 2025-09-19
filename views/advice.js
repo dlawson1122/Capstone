@@ -5,8 +5,8 @@ export default state => html`
     <section class="advice">
       <h2>Share what helped you</h2>
 
-      <div class="journal-card">
-        <div class="journal-ribbon">New Advice</div>
+      <div class="advice-form">
+        <div class="advice-ribbon">New Advice</div>
         <form id="adviceForm" style="display:grid; gap:12px; margin-top:8px">
           <input
             type="text"

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html && copyfiles _redirects dist",
-    "dev:server": "nodemon server/app.js"
+    "dev:server": "nodemon ./server/app.js"
   },
   "keywords": [],
   "author": "",

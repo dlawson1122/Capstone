@@ -14,7 +14,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #4DB6AC; /* Verdigris */
+  background: #4DB6AC;
   color: #fff;
   padding: 16px;
 }
@@ -27,28 +27,20 @@ body {
   border: 0; background: #004D40; color: #fff;
   padding: 8px 12px; border-radius: 8px; cursor: pointer;
 }
-
 .nav .menu {
   list-style: none;
-  display: none;                /* hidden on mobile by default */
+  display: none;
   flex-direction: column;
   gap: 8px;
   background: #CBEEF3;
   padding: 10px 13px;
   border-radius: 10px;
 }
-
 .nav.open .menu { display: flex; }
+.nav a { text-decoration: none; font-weight: 600; }
 
-.nav a {
-  text-decoration: none;
-  font-weight: 600;
-}
-
-/* DESKTOP: make links readable on teal header */
 @media (min-width: 768px) {
   .nav-toggle { display: none; }
-
   .nav .menu {
     display: flex !important;
     flex-direction: row;
@@ -56,133 +48,271 @@ body {
     background: transparent;
     padding: 0;
   }
-
   .nav .menu li { list-style: none; }
-
-  /* pill + white text so it doesn't blend in */
   .nav .menu a {
     color: #fff;
-    background: #004D40;   /* Brunswick Green */
+    background: #004D40;
     padding: 6px 10px;
     border-radius: 6px;
   }
-
   .nav .menu a:hover,
   .nav .menu a[aria-current="page"] {
-    background: #FF7043;   /* Coral for hover/active */
+    background: #FF7043;
     color: #fff;
   }
 }
 
-/* Hero */
+/* Hero (shared) */
 .hero { text-align: center; margin: 32px auto; }
 .hero img {
-  max-width: 100%; height: auto;
+  max-width: 100%;
+  height: auto;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
 
+/* Home hero (logo shouldn’t overwhelm) */
+.hero--home img {
+  width: 100%;
+  max-height: 360px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* About hero (cover crop is fine) */
+.hero--about img {
+  width: 100%;
+  max-height: 360px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+/* Daily hero (no crop; keep cards visible) */
+.hero--daily img {
+  width: 100%;
+  max-height: 400px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  display: block;
+  margin: 0 auto;
+}
+
 /* Sections */
 main > section { text-align: center; margin: 32px 16px; }
-main > section > p {
-  max-width: 60ch; margin: 8px auto 20px; color: #425b56;
-}
+main > section > p { max-width: 60ch; margin: 8px auto 20px; color: #425b56; }
 
 /* Buttons */
 button {
-  display: block; margin: 24px auto; padding: 14px 32px;
-  font-size: 18px; font-weight: 700; color: #fff; background: #4DB6AC;
-  border: 0; border-radius: 999px; cursor: pointer;
+  display: block;
+  margin: 24px auto;
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: #4DB6AC;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
   box-shadow: 0 6px 12px rgba(0,0,0,.2);
   transition: background-color .25s ease, transform .15s ease;
 }
 button:hover { background: #004D40; transform: translateY(-2px); }
 button:disabled { background: #999; cursor: not-allowed; transform: none; }
 
-/* ===========================
-   Unified Card Look (Tarot / Affirmation / Journal)
-   =========================== */
-.tarot-wrap,
-.affirm-wrap { display: flex; justify-content: center; }
+/* Card Look (Tarot / Affirmation / Advice entries) */
+.tarot-wrap, .affirm-wrap { display: flex; justify-content: center; }
 
 .tarot-card,
 .affirm-card,
-.journal-card {
+.advice-entry {
   position: relative;
-  max-width: 520px; width: 92%;
+  max-width: 520px;
+  width: 92%;
   margin: 32px auto 20px;
   padding: 32px 22px 24px;
   border-radius: 16px;
-  border: 2px solid #caa75a;             /* gold edge */
-  outline: 6px double #d9bf72;            /* ornate frame */
+  border: 2px solid #caa75a;
+  outline: 6px double #d9bf72;
   background: linear-gradient(180deg, #f8f1e3, #f4ecd8);
   box-shadow: 0 14px 30px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.12);
+  text-align: center;
 }
 
+/* Optional ribbons */
 .tarot-ribbon,
 .affirm-ribbon,
-.journal-ribbon {
-  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-  padding: 6px 20px; border-radius: 999px;
-  background: #4DB6AC; color: #fff; font-weight: 800; font-size: 14px;
+.advice-ribbon {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 20px;
+  border-radius: 999px;
+  background: #4DB6AC;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
 }
-
-/* keep contrast for reversed tarot cards */
 .tarot-ribbon.reversed { background: #004D40; }
 
 .card-title {
-  text-align: center; text-transform: uppercase; letter-spacing: .08em;
-  font-weight: 800; color: #2c3e36; margin: 8px 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 800;
+  color: #2c3e36;
+  margin: 8px 0;
 }
 .card-divider {
   height: 1px; width: 60%; margin: 8px auto;
   background: linear-gradient(90deg, rgba(202,167,90,0), #caa75a, rgba(202,167,90,0));
 }
 .card-meaning {
-  max-width: 46ch; margin: 0 auto; font-size: 16px; line-height: 1.7;
-  color: #2f2a22; text-align: center;
+  max-width: 46ch;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #2f2a22;
+  text-align: center;
 }
 
-/* Journal form controls to match the card vibe */
-.journal-card input[type="text"],
-.journal-card textarea,
-.journal-card select {
+/* Advice — Share Form */
+.advice-form {
+  position: relative;
+  max-width: 520px;  /* match tarot/affirm */
+  width: 92%;
+  margin: 32px auto 20px;  /* match spacing */
+  padding: 32px 22px 24px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff, #fbfbfb);
+  border: 1.5px solid #e6e6e6;
+  box-shadow: 0 12px 24px rgba(0,0,0,.10), 0 3px 8px rgba(0,0,0,.06);
+  text-align: left;
+}
+
+.advice-ribbon {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #4DB6AC;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.advice-form input[type="text"],
+.advice-form textarea,
+.advice-form select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid #caa75a;
-  border-radius: 10px;
-  background: #fff8ea;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1.5px solid #dcdcdc;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
   outline: none;
 }
-.journal-card textarea { resize: vertical; }
-.journal-card input:focus,
-.journal-card textarea:focus,
-.journal-card select:focus {
-  box-shadow: 0 0 0 3px rgba(77,182,172,.25);
-  border-color: #d9bf72;
+
+.advice-form textarea {
+  resize: vertical;
+  min-height: 90px;
 }
 
-/* Journal list layout */
-.entries-stack {
+.advice-form input:focus,
+.advice-form textarea:focus,
+.advice-form select:focus {
+  border-color: #4DB6AC;
+  box-shadow: 0 0 0 3px rgba(77,182,172,.18);
+}
+
+.advice-form button {
+  background: linear-gradient(180deg, #4DB6AC, #379c91);
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 16px;
+  border: 0;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,.12);
+}
+
+.advice-form button:hover {
+  background: linear-gradient(180deg, #379c91, #004D40);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,.15);
+}
+
+/* Advice — Entries List */
+#adviceList {
   max-width: 720px;
-  margin: 12px auto 40px;
+  margin: 16px auto 40px;
   display: grid;
   gap: 20px;
 }
+
+#adviceList > article,
+#adviceList > div {
+  position: relative;
+  max-width: 520px;  /* match tarot/affirm */
+  width: 92%;
+  margin: 32px auto 20px;
+  padding: 32px 22px 24px;
+  border-radius: 16px;
+  border: 2px solid #caa75a;
+  outline: 6px double #d9bf72;
+  background: linear-gradient(180deg, #f8f1e3, #f4ecd8);
+  box-shadow: 0 14px 30px rgba(0,0,0,.18), 0 4px 10px rgba(0,0,0,.12);
+  text-align: center;
+}
+
+/* Title inside advice entries */
+#adviceList h3, #adviceList .title {
+  margin-top: 6px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: #2c3e36;
+  text-transform: uppercase;
+}
+
+
+
+/* Metadata row */
 .entry-meta {
-  display: block; text-align: center; color: #6b7a76; font-size: 12px; margin-top: 8px;
+  display: block;
+  color: #6b7a76;
+  font-size: 12px;
+  margin: 6px 0 10px;
 }
 
 /* Footer */
 footer {
-  text-align: center; background: #4DB6AC; color: #fff;
-  padding: 16px; margin-top: 48px; font-size: 14px;
+  text-align: center;
+  background: #4DB6AC;
+  color: #fff;
+  padding: 16px;
+  margin-top: 48px;
+  font-size: 14px;
 }
 
 /* About */
 .about-card {
-  max-width: 800px; margin: 32px auto; background: #fff; padding: 32px;
-  border-radius: 12px; box-shadow: 0 6px 14px rgba(0,0,0,.1); text-align: center;
+  max-width: 800px;
+  margin: 32px auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.1);
+  text-align: center;
 }
 .about-card h2 { color: #004D40; margin-bottom: 16px; }
 .about-card p { color: #425b56; line-height: 1.7; }
@@ -190,7 +320,9 @@ footer {
 /* 404 */
 #oops404 { text-align: center; padding: 2rem; color: #004D40; }
 #oops404 img {
-  max-width: 420px; width: 92%; border-radius: 12px;
+  max-width: 420px; width: 92%;
+  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
-  margin: 1rem auto; display: block;
+  margin: 1rem auto;
+  display: block;
 }

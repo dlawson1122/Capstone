@@ -12,7 +12,7 @@ function getRandomCardFromDeck() {
 export default () => {
   const dailyView = html`
     <main>
-      <section class="hero">
+      <section class="hero hero--daily">
         <img src="${heroImg}" alt="Draw a Tarot Card" />
       </section>
 
@@ -28,6 +28,7 @@ export default () => {
         <p>Tap for a quick, positive reframe.</p>
         <button id="affBtn">Get Affirmation</button>
         <div id="affResult"></div>
+
       </section>
     </main>
   `;
