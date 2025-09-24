@@ -51,6 +51,23 @@ router.get("/:id", async (request, response) => {
   }
 });
 
+// POST /api/advice/:id/helpful  (CRUD: partial update – increment)
+router.post("/:id/helpful", async (request, response) => {
+  try {
+    const updated = await AdviceEntry.findByIdAndUpdate(
+      request.params.id,
+      { $inc: { helpfulCount: 1 } },
+      { new: true }
+    );
+
+    if (!updated) return response.status(404).json({ error: "Not found" });
+    response.json(updated);
+  } catch (error) {
+    console.error("Helpful error:", error);
+    response.status(400).json({ error: "Invalid ID" });
+  }
+});
+
 
 // PUT /api/advice/:id
 router.put("/:id", async (request, response) => {
